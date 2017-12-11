@@ -1,0 +1,11 @@
+#EXECUTION INFORMATION
+TESTDATA							=/testdata/TestData.ods
+OS 									=windows
+ELEMENTLOAD							=60
+#BROWSER INFO
+#------------------------------------------------------------------------------------------------------------------------------------
+FIREFOXPATH							=D:/PROJECTS/DJS/Nimble/browsers/firefox46/firefox.exe
+LINUXPATH							=./browsers/linux/firefox/firefox-bin
+#------------------------------------------------------------------------------------------------------------------------------------
+IMAGEMAGICLOG						=/log/imagemagiclog.txt
+IMAGEMAGICKPATH						=C:/Program Files/ImageMagick-7.0.2-Q16

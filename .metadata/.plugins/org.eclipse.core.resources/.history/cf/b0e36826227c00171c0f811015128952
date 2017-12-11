@@ -1,0 +1,110 @@
+package DataCopier;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jopendocument.dom.OOUtils;
+import org.jopendocument.dom.spreadsheet.Sheet;
+
+
+public class BaseFile extends Configurator {
+	
+	public static Sheet sheet;
+
+	public static void main(String[] args) throws Exception {
+		List<Object> excel1 = sheet(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
+		writeexcel(0, 0,3,excel1);
+	}
+	
+	public static List<Object> sheet(int n,int value) throws Exception
+	{
+		sheet = sheets().getSheet(n);
+		List<Object> testIndex = new ArrayList<Object>();
+		for(int row=0;row<sheet.getRowCount();row++)
+		{
+			testIndex.add(sheet.getValueAt(value, row));
+			testIndex.remove("");
+		}
+			return testIndex;	
+	
+	}
+	public static void writeexcel(int sheetindex,int columeindex,int rowindex,List<Object> val) throws Exception, IOException
+	{
+		System.out.println(sheetindex+" "+columeindex+" "+rowindex);
+		File outputfile = new File("C:/Users/12695/Desktop/Test123.ods");
+		sheet = sheets().getSheet(sheetindex);
+		for(Object m : val)
+		{
+			sheet.setValueAt(m, columeindex, rowindex);
+			//sheet.getSpreadSheet().getTableModel("A").setValueAt(m, columeindex, rowindex);
+		}
+		OOUtils.open(sheet.getSpreadSheet().saveAs(outputfile));
+		//OOUtils.open(sheet.getSpreadSheet().saveAs(outputfile));
+	//	sheet.getSpreadSheet().saveAs(new File("C:/Users/12695/Desktop/Test123.ods"));
+		
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+for(int i=0;i<sheets().getSheetCount();i++)
+{
+ArrayList<String> sheetname = new ArrayList<String>();
+	sheetname.add(sheets().getSheet(i).getName());
+	
+}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*for(Object m : val)
+{
+	sheet.setValueAt(m, 0, columeindex);
+	OOUtils.open(sheet.getSpreadSheet().saveAs(outputFile)); 
+	
+	
+	//sheet.setValueAt(m, 0, columeindex);
+//	OOUtils.open(sheet.getSpreadSheet().saveAs(outputFile));
+}
+
+for(int row=0;row<sheet.getRowCount();row++)
+{
+	sheet.setValueAt(val, 0, columeindex);
+}
+ 
+  //  OOUtils.open(sheet.getSpreadSheet().saveAs(outputFile));
+}*/

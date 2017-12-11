@@ -1,0 +1,162 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
+import org.jopendocument.dom.OOUtils;
+import org.jopendocument.dom.spreadsheet.Sheet;
+import org.jopendocument.dom.spreadsheet.SpreadSheet;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+
+public class Executor
+{
+	static Properties p;
+	static WebDriver d;
+	static Sheet sheet;
+	static String pwd = BaseMethod.pwd;
+	static SpreadSheet sheets;
+	public static void main(String args[]) throws Exception
+	{
+		int start = 0, stop = 0;
+		Object[] driver_FileObjects = new Object[2];
+		String outputFile = Helper.getFileName();
+		int browsersSelectionValue[] = Helper.getLimit(args[0]);
+		p = BaseMethod.properties();
+		sheets = BaseMethod.sheets();
+		for(;browsersSelectionValue[0]<=browsersSelectionValue[1];browsersSelectionValue[0]++)
+		{
+			if((browsersSelectionValue[1]==2)&&(browsersSelectionValue[0]!=1)&&(!args[0].toUpperCase().contains("CHROME")))
+			{
+				browsersSelectionValue[0]=3;
+			}
+			
+			driver_FileObjects = Helper.driversSheet(args[0], browsersSelectionValue[0]); 
+			d = (WebDriver) driver_FileObjects[0];	/* Will get the browser instance*/
+			sheet = (Sheet) driver_FileObjects[1];	/* Will get the sheet object*/
+			
+			if(args.length==1)
+			{
+				List<Integer> lists = Helper.rowValue(sheet);
+				start = lists.get(0);
+				stop = lists.get(lists.size()-1);
+			}
+			else
+			{
+				int start_stop[] = Helper.excelIndexes(args);
+				start = start_stop[0];
+				stop = start_stop[1];
+			}
+			
+			try
+			{
+				writeToSpecificCell(new File(pwd+"/"+outputFile), sheet, String.valueOf(stop-start), "A2");   /* will get the total number of url*/
+				for(int i=start;i<=stop;i++)
+				{
+					d.get(sheet.getCellAt("A"+i).getTextValue().trim());
+					if(waitFor(p.getProperty("VALIDATION_PANE").trim(), Long.parseLong(p.getProperty("BUFFERWAIT").trim())))
+					{
+						String validationDiv =  d.findElement(By.xpath(p.getProperty("VALIDATION_PANE").trim())).getText().trim();
+						
+						/* Will get into this block if the validation pane has not failures*/
+						if(validationDiv.equalsIgnoreCase("Validation Success"))
+						{
+							writeToSpecificCell(new File(pwd+"/"+outputFile), sheet, "Pass", "B"+i);
+						}
+						
+						/* Will get into this block if the validation pane has failures*/
+						
+						else if(validationDiv.equalsIgnoreCase("Validation Fail"))
+						{
+							/* Will get the list of types of validation*/
+							
+							List<WebElement> validationErrors = d.findElements(By.xpath(p.getProperty("VALIDATION_ERROR_SET").trim()));
+							writeToSpecificCell(new File(pwd+"/"+outputFile), sheet, "Fail", "B"+i);
+							for(int j =1;j<=validationErrors.size();j++)
+							{
+								String errorCount = d.findElement(By.xpath("("+p.getProperty("VALIDATION_ERROR_SET").trim()+")["+j+"]/div[2]")).getText();
+								if(!errorCount.equals("0"))
+								{
+									String errorId = d.findElement(By.xpath("("+p.getProperty("VALIDATION_ERROR_SET").trim()+")["+j+"]/div[1]")).getAttribute("id");
+									String outOfValue = d.findElement(By.xpath("("+p.getProperty("VALIDATION_ERROR_SET").trim()+")["+j+"]/div[4]")).getText();
+									int columnValue = returnCellValue(errorId, sheet);
+									sheet.setValueAt(errorCount, columnValue, i-1);
+									sheet.setValueAt(outOfValue, columnValue+1, i-1);
+									sheet.getSpreadSheet().saveAs(new File(pwd+"/"+outputFile));
+								}
+								
+								/* Will get into this block if error type count is 0*/
+								
+								else
+								{
+									continue;
+								}
+							}
+						}
+					}
+					
+					/* Will get into this block if the validation pane is not displayed*/
+					
+					else
+					{
+						writeToSpecificCell(new File(pwd+"/"+outputFile), sheet, "Timeout", "B"+i);
+					}
+				}
+						d.close();	/* Will close the browser instance*/
+			}
+			catch(Exception e)
+			{
+				System.out.println("URL: LOADING PROBLEM");
+				OOUtils.open(sheet.getSpreadSheet().saveAs(new File(pwd+"/"+outputFile)));
+			}
+		}	
+	}
+	
+	/* This method waits for the element until it is visible*/
+	
+	public static boolean waitFor(String element, long bufferWait) throws Exception
+	{
+		boolean response = false;
+		try
+		{
+			(new WebDriverWait(d, bufferWait)).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(element)));
+			response = true;		
+		} 
+		catch (Exception ex) 
+		{
+			System.out.println("Validation Pane not Found");
+		}		
+			return response;
+	}
+	
+	/* This method returns the error_id's cell index in the excel file*/
+	
+	public static int returnCellValue(String erroName, Sheet sheet)
+	{
+		int cellIndex =0;
+		for(int col=2;col<sheet.getColumnCount();col++)
+		{
+			if(sheet.getValueAt(col, 2).equals(erroName))
+			{
+				cellIndex = col;
+				break;
+			}
+		}
+			return cellIndex;
+	}
+	
+	/* This method writes to the sheet instance*/
+	
+	public static void writeToSpecificCell(File file, Sheet sheet, String result, String cellValue) throws FileNotFoundException, IOException
+	{
+		sheet.getCellAt(cellValue).setValue(result);
+		sheet.getSpreadSheet().saveAs(file);
+	}
+	
+}

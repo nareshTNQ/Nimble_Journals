@@ -1,0 +1,13 @@
+package zzz;
+
+public class CopyOfA extends C{
+	
+	public CopyOfA(){
+		System.out.println("First");
+	}
+	
+	public static void B(){
+		System.out.println("Second");
+	}
+
+}

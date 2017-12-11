@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/proofcentral/src/main/java/xcentral/Runner.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="xcentral.Runner"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-testset=landingpage-au,interface-au -releasename=Raja -customer=Elsevier -browser=Chrome -projectname=pc -testcaseid=au -testtype=regression -flowtype=S_T -productversion=2.0 -browserversion=58 -projecttype=journals -testdata=/testdata/3.1.ods -operatingsystem=WIN -systemversion=8.1 -environment=local"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="proofcentral"/>
+<stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
+</launchConfiguration>

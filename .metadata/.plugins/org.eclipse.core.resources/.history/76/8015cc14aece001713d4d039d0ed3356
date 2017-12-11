@@ -1,0 +1,9 @@
+#EXECUTION INFORMATION
+MOUNTPATH							=\\\\tnqfs07\\SOFTWARE\\TESTING_SERVICES\\Projects
+MOUNTURL	                        =http://autotestresult.tnq.co.in:81/Projects
+CONFIGELEMENTLOCATION				=//tnqfs07/SOFTWARE/TESTING_SERVICES/Projects/Dependencies/config/Nimble/elements.properties
+TESTDATALOCATION					=//tnqfs07/SOFTWARE/TESTING_SERVICES/Projects/Dependencies
+#BROWSER INFO
+#------------------------------------------------------------------------------------------------------------------------------------
+FIREFOXPATH							=D:/PROJECTS/DJS/Nimble/browsers/firefox46/firefox.exe
+LINUXPATH							=./browsers/linux/firefox/firefox-bin

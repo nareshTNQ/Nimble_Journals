@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="MavenProjectWizardArchetypePage">
+		<item value="All Catalogs" key="catalog"/>
+		<list key="projectNameTemplate">
+			<item value="[artifactId]"/>
+			<item value="[artifactId]-TRUNK"/>
+			<item value="[artifactId]-[version]"/>
+			<item value="[groupId].[artifactId]"/>
+			<item value="[groupId].[artifactId]-[version]"/>
+		</list>
+	</section>
+	<section name="MavenCheckoutLocationPage">
+		<list key="scmUrl">
+		</list>
+		<list key="projectNameTemplate">
+			<item value="[artifactId]"/>
+			<item value="[artifactId]-TRUNK"/>
+			<item value="[artifactId]-[version]"/>
+			<item value="[groupId].[artifactId]"/>
+			<item value="[groupId].[artifactId]-[version]"/>
+		</list>
+	</section>
+	<section name="org.eclipse.m2e.core.pom.overview">
+		<list key="issueManagementUrl">
+		</list>
+		<list key="issueManagementSystem">
+		</list>
+		<list key="ciManagementUrl">
+		</list>
+		<list key="ciManagementSystem">
+		</list>
+	</section>
+	<section name="org.eclipse.m2e.core.pom.dependencies">
+	</section>
+	<section name="MavenProjectWizardLocationPage">
+		<list key="location">
+			<item value="D:\TNQ\projects\x20-mobile"/>
+		</list>
+		<list key="projectNameTemplate">
+			<item value="[artifactId]"/>
+			<item value="[artifactId]-TRUNK"/>
+			<item value="[artifactId]-[version]"/>
+			<item value="[groupId].[artifactId]"/>
+			<item value="[groupId].[artifactId]-[version]"/>
+		</list>
+	</section>
+	<section name="Maven2ProjectWizardArchifactPage">
+		<list key="groupId">
+		</list>
+		<list key="package">
+		</list>
+		<list key="artifactId">
+		</list>
+		<list key="projectNameTemplate">
+			<item value="[artifactId]"/>
+			<item value="[artifactId]-TRUNK"/>
+			<item value="[artifactId]-[version]"/>
+			<item value="[groupId].[artifactId]"/>
+			<item value="[groupId].[artifactId]-[version]"/>
+		</list>
+		<list key="version">
+			<item value="0.0.1-SNAPSHOT"/>
+		</list>
+	</section>
+	<section name="MavenProjectImportWizardPage">
+		<list key="rootDirectory">
+			<item value="C:\Users\12695\Desktop\Select_Sel_Automation"/>
+			<item value="D:\TNQ\projects\pc-automation"/>
+			<item value="D:\TNQ\projects\common\Pc"/>
+			<item value="D:\food"/>
+			<item value="D:\TNQ\projects\pc"/>
+			<item value="D:\RAJA\WORKSPACE\allure-testng-example-master"/>
+			<item value="D:\TNQ\projects\common\Select"/>
+			<item value="D:\TNQ\projects\Select"/>
+			<item value="C:\Users\12695\Downloads\Allure\allure-testng-example-master"/>
+			<item value="D:\TNQ\projects\x20-mobile"/>
+			<item value="D:\RAJA\Z PERSONAL\IMPORTANT\Raja\FRAMEWORK1"/>
+			<item value="C:\Users\12695\Desktop\x20-mobile\x20-mobile"/>
+			<item value="D:\PROJECTS\XCENTRAL"/>
+			<item value="D:\TNQ\projects\common\nimble-maven"/>
+			<item value="D:\TNQ\projects\common\nimble-djs"/>
+		</list>
+		<list key="projectNameTemplate">
+			<item value="[groupId].[artifactId]-[version]"/>
+			<item value="[artifactId]-[version]"/>
+			<item value="[groupId].[artifactId]"/>
+			<item value="[artifactId]"/>
+			<item value="[artifactId]-TRUNK"/>
+		</list>
+	</section>
+	<section name="MavenProjectWizardArtifactPage">
+		<list key="groupId">
+			<item value="com.food"/>
+			<item value="com.allure"/>
+			<item value="com.squash"/>
+			<item value="com.test"/>
+			<item value="com.Demo"/>
+			<item value="com.demo"/>
+			<item value="com.framework"/>
+			<item value="com.pc"/>
+			<item value="PC"/>
+			<item value="com.grid"/>
+			<item value="Grid"/>
+			<item value="com.maven"/>
+			<item value="com.tnq.org"/>
+		</list>
+		<list key="name">
+		</list>
+		<list key="artifactId">
+			<item value="food"/>
+			<item value="AllureReport"/>
+			<item value="Squash"/>
+			<item value="Test1"/>
+			<item value="Demo"/>
+			<item value="FirstDemo"/>
+			<item value="Framework"/>
+			<item value="PC"/>
+			<item value="Test"/>
+			<item value="com.pc"/>
+			<item value="Testing1"/>
+			<item value="Grid"/>
+			<item value="com.grid"/>
+			<item value="maven"/>
+			<item value="mavenProject"/>
+		</list>
+		<list key="projectNameTemplate">
+			<item value="[artifactId]"/>
+			<item value="[artifactId]-TRUNK"/>
+			<item value="[artifactId]-[version]"/>
+			<item value="[groupId].[artifactId]"/>
+			<item value="[groupId].[artifactId]-[version]"/>
+		</list>
+		<list key="version">
+			<item value="0.0.1-SNAPSHOT"/>
+		</list>
+	</section>
+</section>

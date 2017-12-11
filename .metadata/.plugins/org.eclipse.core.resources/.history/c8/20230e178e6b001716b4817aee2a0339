@@ -1,0 +1,268 @@
+package com.dartmouthjournals.select.pages;
+
+import java.util.List;
+
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+
+import com.dartmouthjournals.select.generic.BasePage;
+import com.relevantcodes.extentreports.ExtentTest;
+
+public class ProductSubmissionPage extends BasePage
+{
+	@FindBy(id="ctl00_cphMaster_JournalsGridJournal_txtTitleAcronym")
+	private WebElement Title_Acronym;
+	
+	@FindBy(id="ctl00_cphMaster_JournalsGridJournal_txtYear")
+	private WebElement Year;
+	
+	@FindBy(id="ctl00_cphMaster_JournalsGridJournal_txtVolume")
+	private WebElement Volume;
+	
+	@FindBy(id="ctl00_cphMaster_JournalsGridJournal_txtIssue")
+	private WebElement Issue;
+	
+	@FindBy(id="btnAddJournal")
+	private WebElement AddIssue;
+	
+	@FindBy(id="ctl00_cphMaster_JournalsGridJournal_btnSearch")
+	private WebElement search;
+	
+	
+	@FindBy(xpath="//ul[@role='listbox']//li[1]")
+	private WebElement firstValue;
+
+	@FindBy(id="btnSubmitIdentity")
+	private WebElement NextButton;
+	
+	@FindBy(id="divJournalIntentInfoMessage")
+	private WebElement TextPageCountWarning;
+	
+	@FindBy(id="divJournalInfoMessage")
+	private WebElement journalIdentityWarning;
+	
+	
+	@FindBy(id="ctl00_cphMaster_ucAddJournalIntentPOD_txtTextPageCount")
+	private WebElement TextPageCount;
+	
+	@FindBy(id="btnSubmitIntent")
+	private WebElement JournalIntentNextBtn;
+	
+	@FindBy(id="ctl00_cphMaster_ucAddJournalUploadPOD_cntrlProductUploadPod_AjaxFileUploaderCoverNonSEW_SelectFileContainer")
+	private WebElement NonSEW_CoverUpload;
+	
+	@FindBy(xpath="//*[@id='ctl00_cphMaster_ucAddJournalUploadPOD_cntrlProductUploadPod_AjaxFileUploadTextNonSEW_SelectFileButton']")
+	private WebElement NonSEW_TextUpload;
+	
+	@FindBy(id="ctl00_cphMaster_ucAddJournalUploadPOD_cntrlProductUploadPod_AjaxFileUploadCover_SelectFileContainer")
+	private WebElement SEW_CoverUpload;
+	
+	@FindBy(xpath="//*[@id='ctl00_cphMaster_ucAddJournalUploadPOD_cntrlProductUploadPod_AjaxFileUploadCover_SelectFileContainer']")
+	private List<WebElement> SEW_CoverUploaList;
+	
+	@FindBy(id="ctl00_cphMaster_ucAddJournalUploadPOD_cntrlProductUploadPod_AjaxFileUploadText_SelectFileContainer")
+	private WebElement SEW_TextUpload;
+	
+	@FindBy(xpath="//div[text()='Upload' and (contains(@style,'visibility: visible'))]")
+	private WebElement uploadButton;
+	
+	@FindBy(xpath="//*[@id='ctl00_cphMaster_JournalsGridJournal_btnSearch']")
+	private WebElement Search;
+	
+	@FindBy(id="ctl00_cphMaster_ucAddJournalIntentPOD_rdoNo")
+	private WebElement Wait;
+	
+	@FindBy(id="txtNewJournalTitle")
+	private WebElement JournalTitle;
+	
+	@FindBy(id="txtNewJournalAcronym")
+	private WebElement JournalAcronym;
+	
+	@FindBy(id="txtVolume")
+	private WebElement JournalVolume;
+	
+	@FindBy(id="txtIssue")
+	private WebElement JournalIssue;
+	
+	@FindBy(xpath="//*[@id='ctl00_cphMaster_ucAddJournalIntentPOD_DDLBindingType']/option")
+	private List<WebElement> bindingtype;
+	
+	@FindBy(xpath="//*[@id='ctl00_cphMaster_ucAddJournalIntentPOD_DDLCoverPaper']/option")
+	private List<WebElement> coverpaper;
+	
+	@FindBy(xpath="//*[@id='ctl00_cphMaster_ucAddJournalIntentPOD_DDLCoverFinish']/option")
+	private List<WebElement> coverfinish;
+	
+	@FindBy(xpath="//*[@id='ctl00_cphMaster_ucAddJournalIntentPOD_DDLTextPaper']/option")
+	private List<WebElement> textpaper;
+	
+	@FindBy(xpath="//*[@id='ctl00_cphMaster_ucAddJournalIntentPOD_txtWidth']")
+	private WebElement pagewidth;
+	
+	@FindBy(xpath="//*[@id='ctl00_cphMaster_ucAddJournalIntentPOD_txtHeight']")
+	private WebElement pageheight;
+	
+	@FindBy(xpath="//*[@id='ctl00_cphMaster_ucAddJournalIntentPOD_txtTextPageCount']")
+	private WebElement textpagecount;
+	
+
+	public ProductSubmissionPage(WebDriver driver, ExtentTest test) throws Exception	{
+		super(driver, test);
+		PageFactory.initElements(driver, this);
+		waitForDocumentReady();
+	}
+	
+	public ProductSubmissionPage fillTitle(String title) throws Exception	{
+		typeOnElement(Title_Acronym, title);
+		return new ProductSubmissionPage(driver, test);
+	}
+	
+	public ProductSubmissionPage selectFirstTitle() throws Exception	{
+		waitFor("3");
+		triggerKeyEvent(Title_Acronym, Keys.SPACE);
+		clickOnElement(firstValue);
+		return new ProductSubmissionPage(driver, test);
+	}
+	
+	public ProductSubmissionPage selectTitleUsingKeyBoard() throws Exception	{
+		waitFor("3");
+		triggerKeyEvent(Title_Acronym, Keys.SPACE);
+		triggerKeyEvent(Title_Acronym, Keys.BACK_SPACE);
+		waitFor("5");
+		triggerKeyEvent(Title_Acronym, Keys.DOWN);
+		triggerKeyEvent(Title_Acronym, Keys.ENTER);
+		return new ProductSubmissionPage(driver, test);
+	}
+	
+	
+	public ProductSubmissionPage fillYearVolumeIssue(String year, String volume, String issue) throws Exception	{
+		typeOnElement(Year, year);
+		typeOnElement(Volume, volume);
+		typeOnElement(Issue, issue);
+		return new ProductSubmissionPage(driver, test);
+	}
+	
+	public ProductSubmissionPage addIssue() throws Exception {
+		waitForElementVisible(AddIssue);
+		clickOnElement(AddIssue);
+		return new ProductSubmissionPage(driver, test);
+	}
+	
+	public ProductSubmissionPage search() throws Exception {
+		clickOnElement(Search);
+		return new ProductSubmissionPage(driver, test);
+	}
+	
+	public ProductSubmissionPage fillJournalIdentityTitleAcronym(String title) throws Exception	{
+		typeOnElement(JournalTitle, title.split("/")[0]);
+		typeOnElement(JournalAcronym, title.split("/")[1]);
+		return new ProductSubmissionPage(driver, test);
+	}
+	
+	public ProductSubmissionPage fillJournalIdentityVolume(String volume) throws Exception {
+		typeOnElement(JournalVolume, volume);
+		return new ProductSubmissionPage(driver, test);
+	}
+	
+	public ProductSubmissionPage fillJournalIdentityIssue(String issue) throws Exception {
+		typeOnElement(JournalIssue, issue);
+		return new ProductSubmissionPage(driver, test);
+	}
+	
+	
+	public ProductSubmissionPage clickNextButton() throws Exception	{
+		clickOnElement(NextButton);
+		return new ProductSubmissionPage(driver, test);
+	}
+	
+	public ProductSubmissionPage verifyAlertInfo() throws Exception	{
+		waitForElementVisible(journalIdentityWarning);
+		return new ProductSubmissionPage(driver, test);
+	}
+	
+		
+	public ProductSubmissionPage setPageCount(String pageCount) throws Exception	{
+		typeOnElement(TextPageCount, pageCount);
+		clickOnElement(Wait);
+		waitFor("5");
+		waitForElementVisible(JournalIntentNextBtn);
+		clickOnElement(JournalIntentNextBtn);
+		return new ProductSubmissionPage(driver, test);
+	}
+	
+	
+	public ProductSubmissionPage verifyPageCountMandatory() throws Exception	{
+		clickOnElement(JournalIntentNextBtn);
+		waitForElementVisible(TextPageCountWarning);
+		return new ProductSubmissionPage(driver, test);
+	}
+	
+	public ProductSubmissionPage verifyNonSEWUploadPageVisible() throws Exception {
+		waitForElementVisible(NonSEW_CoverUpload);
+		return new ProductSubmissionPage(driver, test);
+	}
+	
+	public ProductSubmissionPage verifySEWUploadPageInVisible() throws Exception {
+		waitForElementInvisible(SEW_CoverUploaList);
+		return new ProductSubmissionPage(driver, test);
+	}
+	
+	
+	public ProductSubmissionPage bindingType(String type) throws Exception
+	{
+		selectValueFromDropdown(bindingtype, type);
+		return new ProductSubmissionPage(driver, test);
+	}
+	
+	public ProductSubmissionPage coverPaper(String type) throws Exception
+	{
+		selectValueFromDropdown(coverpaper, type);
+		return new ProductSubmissionPage(driver, test);
+	}
+	
+	public ProductSubmissionPage coverFinish(String type) throws Exception
+	{
+		selectValueFromDropdown(coverfinish, type);
+		return new ProductSubmissionPage(driver, test);
+	}
+	
+	public ProductSubmissionPage textPaper(String type) throws Exception
+	{
+		selectValueFromDropdown(textpaper, type);
+		return new ProductSubmissionPage(driver, test);
+	}
+	
+	public ProductSubmissionPage pageTrimSize(String width, String height) throws Exception
+	{
+		typeOnElement(pagewidth, width);
+		typeOnElement(pageheight, height);
+		return new ProductSubmissionPage(driver, test);
+	}
+	
+	public ProductSubmissionPage textPageCount(String countsize) throws Exception
+	{
+		typeOnElement(textpagecount, countsize);
+		return new ProductSubmissionPage(driver, test);
+	}
+	
+	public ProductSubmissionPage waitUntil(int seconds) throws Exception
+	{
+		Thread.sleep(seconds);
+		return new ProductSubmissionPage(driver, test);
+	}
+	
+	
+//		uploadFile(pwd+"/Assets/FileUpload.exe", "9841455459123_COV_2_PAGES.pdf", NonSEW_CoverUpload);
+//		clickOnElement(uploadButton);
+//		waitFor("20");
+//		uploadFile(pwd+"/Assets/FileUpload.exe", "9841455459123_TXT_180_PAGES.pdf", NonSEW_TextUpload);
+//		clickOnElement(uploadButton);
+//		waitFor("10");
+//		return new ProductSubmissionPage(driver, test);
+	}
+	
+	
+

@@ -1,0 +1,19 @@
+package nimble;
+
+import java.io.File;
+
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+
+public class Template {
+	public static  ExtentReports createReporter(ExtentReports reports) {
+		
+		reports = new ExtentReports("_TestResult.html");
+		reports.addSystemInfo("Host Name", "Nimble");
+		reports.addSystemInfo("Environment", "Automation Testing Environment");
+		reports.addSystemInfo("Tester Name", "Raja C");
+		reports.addSystemInfo("Browser", "Firefox 46.0.1");
+		reports.loadConfig(new File("./resources/ExtentConfig.xml"));
+		return reports; 
+	}
+}

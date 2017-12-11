@@ -1,0 +1,5 @@
+#----------------------------------------------------------------------------------------------------------------------------------------
+TESTDATA_LOCATION				=//tnqfs07/SOFTWARE/TESTING_SERVICES/Projects/NIMBLE/TESTDATA/
+CONFIG_LOCATION					=//tnqfs07/SOFTWARE/TESTING_SERVICES/Projects/NIMBLE/CONFIG/configuration.properties
+#----------------------------------------------------------------------------------------------------------------------------------------
+

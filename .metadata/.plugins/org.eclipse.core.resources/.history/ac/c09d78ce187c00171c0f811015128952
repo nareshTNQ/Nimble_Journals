@@ -1,0 +1,24 @@
+package DataCopier;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
+import org.openqa.selenium.WebDriver;
+
+public class Test {
+	public static WebDriver driver;
+	public static String name;
+
+	public static void main(String[] args) throws Exception, SecurityException 
+		{
+			Field[] field = Test.class.getDeclaredFields();  //For print variable names
+			for(Field f : field){
+				System.out.println(f.getName());
+		}
+		/*{
+			Method[] field = Test.class.getDeclaredMethods();  //For print method names
+			for(Method f : field){
+				System.out.println(f.getName());
+		}*/
+	}
+}

@@ -1,0 +1,142 @@
+package nimble;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jopendocument.dom.spreadsheet.Sheet;
+
+public class ArrangeTestSet 
+{
+static Sheet sheet;
+	
+	public static List<Integer> serializeExecution(String from, String to) throws Exception
+	{
+		System.out.println("--->"+from);
+		System.out.println("===>"+to);
+		
+		int n = Configurator.sheets().getSheetCount();
+		List<Integer> range = new ArrayList<Integer>();
+		
+		/* Adds all Sheets to the list */
+		
+		if(from.equalsIgnoreCase("ALL")&&(to==null))
+		{
+			for(int i=1;i<Configurator.sheets().getSheetCount();i++)
+			{
+				range.add(i);
+			}
+		}
+		
+		/* Will add specific single sheet*/   
+		
+		else if(!from.equalsIgnoreCase("all")&&(!from.contains(":"))&&(to==null))
+		{
+			range.add(1);
+			for(int i=2;i<n;i++)
+			{
+				if(Configurator.sheets().getSheet(i).getName().equalsIgnoreCase(from))
+				{
+					range.add(i);
+				}
+			}
+		}
+		
+		/*  Will add sheets between ranges  */
+		
+		else if(!from.equalsIgnoreCase("all")&&(to!=null))
+		{
+			int start =0;
+			range.add(1);
+			for(int i=2;i<n;i++)
+			{
+				if(Configurator.sheets().getSheet(i).getName().equalsIgnoreCase(from))
+				{
+					start = i;
+					range.add(start);
+					start = start+1;
+				}
+			}
+			for(;start<n;start++)
+			{
+				if(!Configurator.sheets().getSheet(start).getName().equalsIgnoreCase(to))
+				{
+					range.add(start);
+				}
+				else
+				{
+					range.add(start);
+					break;
+				}
+			}
+		}
+		
+		// Will add only specified TestSets
+		
+		else if(from.contains(",")&&(!from.contains("-exclude="))&&(to==null))
+		{
+			String[] testset =from.trim().split(",");
+			range.add(1);
+			for(int k=0;k<testset.length;k++)
+			{
+				for(int i=2;i<n;i++)
+				{
+					if(Configurator.sheets().getSheet(i).getName().equalsIgnoreCase(testset[k]))
+					{
+						range.add(i);
+					}
+				}
+			}
+		}
+		
+		// IT RUNS TEST WITHOUT EXCLUDED TESTSETS
+		
+		else if(from.contains("-exclude=")&&(from.contains(","))&&(to==null))
+		{
+			List<Integer> exclude = new ArrayList<Integer>();
+			String testSets[] = from.split("=");
+			String testSet[] = testSets[1].split(",");
+			for(int m=1;m<n;m++)
+			{
+				range.add(m);
+			}
+			
+			for(int k=0;k<testSet.length;k++)
+			{
+				for(int f=0;f<range.size();f++)
+				{
+					if(Configurator.sheets().getSheet(f).getName().equalsIgnoreCase(testSet[k]))
+					{
+						exclude.add(f);
+						break;
+					}
+				}
+			}
+			
+			for(int x=0;x<exclude.size();x++)
+			{
+				for(int y=0;y<range.size();y++)
+				{
+					if(exclude.get(x).equals(range.get(y)))
+					{
+						range.remove(y);
+					}
+				}
+			}
+		}
+		
+		// IT RUNS TEST WITHOUT EXCLUDED TESTSET
+		
+		else if(from.contains("-exclude=")&&(!from.contains(","))&&(to==null))
+		{
+			String testSets[] = from.split("=");
+			for(int i=1;i<n;i++)
+			{
+				if(!Configurator.sheets().getSheet(i).getName().equalsIgnoreCase(testSets[1]))
+				{
+					range.add(i);
+				}
+			}
+		}
+			return range;
+	}
+}

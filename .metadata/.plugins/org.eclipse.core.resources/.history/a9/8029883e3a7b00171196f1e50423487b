@@ -1,0 +1,19 @@
+package DataCopier;
+
+import org.jopendocument.dom.spreadsheet.SpreadSheet;
+
+
+public class Configurator 
+{	
+	public static File excelfile() throws Exception
+	{
+		File file = new File("C:/Users/12695/Desktop.Test.ods"); 
+		return file;
+	}
+	
+	public static SpreadSheet sheets() throws Exception
+	{
+		SpreadSheet sheet = SpreadSheet.createFromFile(excelfile());
+		return sheet;
+	}
+}

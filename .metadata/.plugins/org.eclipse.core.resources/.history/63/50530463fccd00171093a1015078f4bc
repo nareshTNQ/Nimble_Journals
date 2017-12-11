@@ -1,0 +1,7 @@
+package nimble;
+
+public class Template {
+	public static void createTemplate() {
+		
+	}
+}

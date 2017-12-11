@@ -1,0 +1,10 @@
+package nimble;
+
+import com.relevantcodes.extentreports.ExtentReports;
+
+public class Template {
+	public static void createTemplate(ExtentReports reports) {
+		
+		
+	}
+}

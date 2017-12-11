@@ -1,0 +1,122 @@
+package nimble;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Properties;
+
+import org.jopendocument.dom.spreadsheet.SpreadSheet;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxBinary;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.firefox.internal.ProfilesIni;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+
+
+public class Configurator 
+{
+	public static WebDriver driver;
+	public static String pwd;
+	public static String _excelFile;
+	public static String _firefox;
+	public static String _geckoDriver;
+	
+	
+	public Configurator(String pwd, String _excelFile, String _firefox, String _geckoDriver)
+	{
+		this.pwd = pwd;
+		this._excelFile = _excelFile;
+		this._firefox = _firefox;
+		this._geckoDriver = _geckoDriver;
+	}
+	
+	static String _chromeDriver = pwd+"/drivers/chromedriver.exe";
+	static String _ieDriver	    = pwd+"/drivers/IEDriverServer.exe";
+	
+	
+	public static  WebDriver browser(String browsername) throws Exception 
+	{
+		if(browsername.equalsIgnoreCase("chrome"))
+		{
+			System.setProperty("webdriver.chrome.driver", _chromeDriver);
+			ChromeOptions options = new ChromeOptions();
+			options.addArguments("--disable-extensions");
+			driver = new ChromeDriver(options);
+			driver.manage().window().maximize();
+		}
+		else if(browsername.equalsIgnoreCase("firefox"))
+		{
+			System.setProperty("webdriver.firefox.marionette", _geckoDriver);
+			File binaryPath = new File(_firefox);
+			/*ProfilesIni profileini = new ProfilesIni();
+			FirefoxProfile profile = profileini.getProfile("default");*/
+			FirefoxProfile profile = new FirefoxProfile();
+			FirefoxBinary ffBinary = new FirefoxBinary(binaryPath);
+			DesiredCapabilities capabilities = DesiredCapabilities.firefox();
+			capabilities.setCapability("marionette", true);
+			profile.setPreference("browser.download.folderList", 1);
+			profile.setPreference("browser.download.manager.alertOnEXEOpen", false);
+			profile.setPreference("browser.helperApps.neverAsk.saveToDisk", "application/msword, application/csv, application/ris, text/csv, image/png, application/pdf, text/html, text/plain, application/zip, application/x-zip, application/x-zip-compressed, application/download, application/octet-stream");
+			profile.setPreference("browser.download.manager.showWhenStarting", false);
+			profile.setPreference("browser.download.manager.focusWhenStarting", false);  
+			profile.setPreference("browser.download.useDownloadDir", true);
+			profile.setPreference("browser.helperApps.alwaysAsk.force", false);
+			profile.setPreference("browser.download.manager.alertOnEXEOpen", false);
+			profile.setPreference("browser.download.manager.closeWhenDone", true);
+			profile.setPreference("browser.download.manager.showAlertOnComplete", false);
+			profile.setPreference("browser.download.manager.useWindow", false);
+			profile.setPreference("services.sync.prefs.sync.browser.download.manager.showWhenStarting", false);
+			profile.setPreference("pdfjs.disabled", true);
+			profile.setPreference("plugin.scan.plid.all", true);
+			profile.setPreference("plugin.state.java", 2);
+			profile.setPreference("extensions.blocklist.enabled", false);
+			capabilities.setCapability(FirefoxDriver.PROFILE, profile);
+			driver = new FirefoxDriver(ffBinary,profile,capabilities);
+			driver.manage().window().maximize();
+			driver.get("about:addons");
+			WebElement ele = driver.findElement(By.xpath("//*[@id='category-plugin']"));
+			JavascriptExecutor js = ((JavascriptExecutor) driver);
+			//js.executeScript("arguments[0].click();", ele);
+			js.executeScript("window.document.getElementById('category-plugin').click();");
+			System.out.println("Testing");
+			/*driver.get("about:addons");
+			Thread.sleep(5000);
+			JavascriptExecutor js = ((JavascriptExecutor) driver);
+			String path = "\""+"//*[@id='category-plugin']"+"\"";
+			js.executeScript("var e = document.evaluate("+path+" ,document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;e.click();");*/
+			/*driver.findElement(By.xpath("//*[@id='categories']//*[@id='category-plugin']")).click();
+			driver.findElement(By.xpath(".//*[@id='addon-list']/xul:richlistitem[7]"));
+			System.out.println("End");
+			WebElement ele=driver.findElement(By.xpath(".//*[@id='addon-list']/xul:richlistitem[7]"));
+			Actions action = new Actions(driver);
+			action.doubleClick(ele).perform();
+			driver.findElement(By.xpath(".//*[@id='detail-state-menulist']")).click();
+			driver.findElement(By.xpath(".//*[@label='Always Activate']")).click();*/
+		}
+		else if(browsername.equalsIgnoreCase("ie"))
+		{
+			System.setProperty("webdriver.ie.driver", _ieDriver);
+			driver = new InternetExplorerDriver();
+			driver.manage().window().maximize();
+		}
+			return driver;		
+	}
+	
+	public static File excelfile() throws Exception
+	{
+		File file = new File(_excelFile); 
+		return file;
+	}
+	
+	public static SpreadSheet sheets() throws Exception
+	{
+		SpreadSheet sheet = SpreadSheet.createFromFile(excelfile());
+		return sheet;
+	}
+}

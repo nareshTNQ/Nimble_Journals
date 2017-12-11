@@ -1,0 +1,600 @@
+package com.select.generic;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.lang.reflect.Field;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import Utilities.Test1;
+
+import com.google.common.base.Function;
+import com.relevantcodes.extentreports.ExtentTest;
+import com.select.util.ConfigurationManager;
+import com.select.util.Helper;
+
+public class BasePage {
+
+    protected WebDriver driver;
+    protected ExtentTest test;
+	protected WebDriverWait wait;
+	protected WebDriverWait otherWait;
+	private Actions action;
+	
+	
+	public static String uploadCompleteStatus = "//*[@class='uploadstatus' and text()=' (Uploaded)']";
+	public static String loadComplete = "//div[@id='divInprogressBackgroung' and contains(@style,'display: none')]";
+	public static String pwd = System.getProperty("user.dir");
+	public Support supportObject = new Support();
+	
+	public BasePage(WebDriver driver, ExtentTest test) throws Exception {
+		this.driver = driver;
+		this.test= test;
+		action = new Actions(driver);
+		wait = new WebDriverWait(driver, ConfigurationManager.getTimeOut());
+	}
+	
+	protected boolean navigate(String url) throws Exception	{
+		try	{
+			driver.navigate().to(url);
+			Helper.INSTANCE.logEventToReport(driver, test, "pass", url, "Navigated Successfully");
+			return true;
+		}
+		catch(Exception e)	{
+			Helper.INSTANCE.logEventToReport(driver, test, "pass", url, e.getMessage());
+			throw new Exception("Unable to navigate to "+url+"-"+e.getMessage());
+		}
+	}
+	
+	protected boolean verifyNewTabWindow(WebElement element) throws Exception	{
+		boolean flag = false;
+		try	{
+			Set<?> windowhandles = driver.getWindowHandles();
+			if(windowhandles.size()>1)	{
+				driver.switchTo().window((String) driver.getWindowHandles().toArray()[1]);
+			}
+			flag = waitForElementVisible(element);
+		}	
+		catch(Exception e)	{
+			throw new Exception(e.getMessage());
+		}
+		return flag;
+	}
+	
+	protected boolean isFilePresent(String filePath) throws Exception	{
+		File file = new File(filePath);
+		try	{
+			if(file.exists()) {
+				Helper.INSTANCE.logEventToReport(driver, test, "pass", filePath, "Found");
+				return true;
+			}
+			else {
+				Helper.INSTANCE.logEventToReport(driver, test, "fail", filePath, "Not Found");
+				return false;
+			}
+		}
+		catch(FileNotFoundException e)	{
+			Helper.INSTANCE.logEventToReport(driver, test, "pass", filePath, e.getMessage());
+			throw new Exception("Unable to find file "+filePath+"-"+e.getMessage());
+		}
+		
+	}
+	
+	protected void waitFor(String inseconds) {
+		try	{
+			Thread.sleep(Integer.parseInt(inseconds+"000"));
+		}
+		catch(Exception e)	{
+			e.printStackTrace();
+		}
+	}
+	
+	protected String getInputValue(WebElement element) throws Exception	{	
+		try	{
+			 waitForElementVisible(element);
+			 return (String)((JavascriptExecutor)driver).executeScript("return arguments[0].value;", element);
+		}
+		catch(Exception e)	{
+			throw new Exception("Unable to retreive value "+e);
+		}
+	}
+	
+	protected boolean triggerKeyEvent(WebElement element, Keys key) throws Exception	{
+		try {
+			action.moveToElement(element).sendKeys(key).build().perform();
+			Helper.INSTANCE.logEventToReport(driver, test, "pass", element, key+" Event Triggered");
+			return true;
+		}
+		catch(Exception e)	{
+			Helper.INSTANCE.logEventToReport(driver, test, "error", element, e.getMessage());
+			throw new Exception("Unable to trigger Key "+key+" - "+e.getMessage());
+		}
+	}
+	
+	protected boolean uploadFile(String exePath, String fileName, WebElement element) throws Exception	{
+		try	{
+			waitForDocumentReady();
+			clickOnElement(element);
+			waitFor("5");
+			Runtime.getRuntime().exec(exePath+" "+new File(exePath).getParent()+"\\"+fileName);
+			Helper.INSTANCE.logEventToReport(driver, test, "pass", element, fileName+" Uploaded");
+			return true;
+		}
+		catch(Exception e)	{
+			Helper.INSTANCE.logEventToReport(driver, test, "error", element, e.getMessage());
+			throw new Exception("Unable to upload File "+fileName+" - "+e.getMessage());
+		}
+	}
+	
+	
+	protected boolean waitTillUploadComplete(String element) throws Exception	{
+		try	{
+			otherWait = new WebDriverWait(driver, 150);
+			otherWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(element)));
+			Helper.INSTANCE.logEventToReport(driver, test, "pass", "File", "Uploaded");
+			return true;
+		}
+		catch(Exception e)	{
+			Helper.INSTANCE.logEventToReport(driver, test, "error", element, e.getMessage());
+			throw new Exception(element+"- presence "+e.getMessage());
+		}
+	}
+	
+	
+	protected boolean waitForElementLoad(String element, int max_Time) throws Exception	{
+		try	{
+			otherWait = new WebDriverWait(driver, max_Time);
+			otherWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(element)));
+			Helper.INSTANCE.logEventToReport(driver, test, "pass", "File", "Uploaded");
+			return true;
+		}
+		catch(Exception e)	{
+			Helper.INSTANCE.logEventToReport(driver, test, "error", element, e.getMessage());
+			throw new Exception(element+" wait for "+max_Time+" - "+e.getMessage());
+		}
+	}
+	
+	protected boolean clickOnElement(WebElement element) throws Exception {
+		try {			
+			waitForDocumentReady();		
+			wait.until(ExpectedConditions.visibilityOf(element));
+			element.click();
+			Helper.INSTANCE.logEventToReport(driver, test, "pass", element, "ClickOnElement");
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			Helper.INSTANCE.logEventToReport(driver, test, "error", element, e.getMessage());
+			throw new Exception("Unable to click element.", e);
+		}
+	}
+
+	protected boolean typeOnElement(WebElement element, String text) throws Exception {
+		try {
+			waitForDocumentReady();
+			wait.until(ExpectedConditions.visibilityOf(element));
+			element.clear();
+			element.sendKeys(text);
+			Helper.INSTANCE.logEventToReport(driver, test, "pass", element, "TypeOnElement");
+			return true;
+		} catch (Exception e) {
+			Helper.INSTANCE.logEventToReport(driver, test, "error", element, e.getMessage());
+			throw new Exception("Unable to type on element.", e);
+		}
+	}
+
+	protected String getTextFromElement(WebElement element) throws Exception {
+		try {
+			waitForDocumentReady();
+			wait.until(ExpectedConditions.visibilityOf(element));
+			Helper.INSTANCE.logEventInfoToReport(driver, test, "Text", element.getText());
+			return element.getText();
+		} catch (Exception e) {
+			Helper.INSTANCE.logEventToReport(driver, test, "error", element, e.getMessage());
+			throw new Exception("Unable to get text from element.", e);
+		}
+	}
+
+	protected boolean selectValueFromDropdown(List<WebElement> drpObject, String value) throws Exception {
+		boolean result = false;
+		try{
+			for (WebElement webElement : drpObject) {
+				if (webElement.getText().equalsIgnoreCase(value)) {
+					result = clickOnElement(webElement);
+					Thread.sleep(5000);
+					Helper.INSTANCE.logEventToReport(driver, test, "Pass", value, "Selected In Drop Down");
+				}
+			}
+			return result;
+		}catch(Exception e)	{
+			Helper.INSTANCE.logEventToReport(driver, test, "error", value, e.getMessage());
+		}
+			return result;
+	}
+	
+	protected boolean selectByVisibleText(WebElement element, String value) throws Exception	{
+		try	{
+			waitForDocumentReady();
+			waitForElementVisible(element);
+			Select select = new Select(element);
+			select.selectByVisibleText(value);
+			waitFor("5");
+			Helper.INSTANCE.logEventToReport(driver, test, "pass", element, "Drop Down Value Selected");
+			return true;
+		}
+		catch(Exception e)	{
+			Helper.INSTANCE.logEventToReport(driver, test, "error", element, e.getMessage());
+			throw new Exception("Unable To Select Value");
+		}
+	}
+	
+	protected boolean selectByIndex(WebElement element, int index) throws Exception	{
+		try	{
+			waitForDocumentReady();
+			waitForElementVisible(element);
+			Select select = new Select(element);
+			select.selectByIndex(index);
+			waitFor("5");
+			Helper.INSTANCE.logEventToReport(driver, test, "pass", element, "Drop Down Value Selected");
+			return true;
+		}
+		catch(Exception e)	{
+			Helper.INSTANCE.logEventToReport(driver, test, "error", element, e.getMessage());
+			throw new Exception("Unable To Select Index");
+		}
+		
+	}
+	
+	protected boolean selectByValue(WebElement element, String value) throws Exception	{
+		try	{
+			waitForDocumentReady();
+			waitForElementVisible(element);
+			Select select = new Select(element);
+			select.selectByValue(value);
+			waitFor("5");
+			Helper.INSTANCE.logEventToReport(driver, test, "pass", element, "Drop Down Value Selected");
+			return true;
+		}
+		catch(Exception e)	{
+			Helper.INSTANCE.logEventToReport(driver, test, "error", element, e.getMessage());
+			throw new Exception("Unable To Select Value");
+		}
+		
+	}
+	
+	protected boolean mouseOver(WebElement element) throws Exception {
+		try {
+			waitForDocumentReady();
+			wait.until(ExpectedConditions.visibilityOf(element));
+			action.moveToElement(element).build().perform();
+			Helper.INSTANCE.logEventToReport(driver, test, "pass", element, "Mouse Over Successfull");
+			return true;
+		} catch (Exception e) {
+			Helper.INSTANCE.logEventToReport(driver, test, "error", element, e.getMessage());
+			throw new Exception("Unable to perform mouse over.", e);
+		}
+	}
+
+	protected boolean isElementPresent(WebElement element) throws Exception{
+		try {
+			return element.isDisplayed();
+		} catch (Exception e) {
+			Helper.INSTANCE.logEventToReport(driver, test, "error", element, e.getMessage());
+			throw new Exception("Unable to determine if the element is present.", e);
+		}
+	}
+
+	protected boolean waitForDocumentReady() throws Exception {
+		boolean result = false;
+		try {
+			if (ConfigurationManager.getSleepMode()) {
+				Thread.sleep(ConfigurationManager.getTimeout());
+			}
+			result = wait.until(new Function<WebDriver, Boolean>() {
+				public Boolean apply(WebDriver driver) {
+					return String.valueOf(((JavascriptExecutor) driver).executeScript("return document.readyState"))
+							.equals("complete")
+							&& Boolean.valueOf(
+									(boolean) ((JavascriptExecutor) driver).executeScript("return jQuery.isReady"))
+									.equals(true);
+				}
+			}); 
+		} catch (Exception e) {
+			if (e.getMessage().contains("jQuery is not defined")) {
+				wait.until(new Function<WebDriver, Boolean>() {
+					public Boolean apply(WebDriver driver) {
+						return String.valueOf(((JavascriptExecutor) driver).executeScript("return document.readyState"))
+								.equals("complete");
+					}
+				});
+			} else {
+				throw new Exception("Unable to complete the loading page.", e);
+			}
+		}
+		return result;
+	}
+
+	public boolean waitForElementVisible(WebElement element) throws Exception {
+		boolean elementPresent = false;
+		try {
+			waitForDocumentReady();
+			if(wait.until(ExpectedConditions.visibilityOf(element)) != null) {
+				Helper.INSTANCE.logEventToReport(driver, test, "Pass", element, "Visible");
+				elementPresent = true;
+			}
+		} 	catch (Exception e){
+				Helper.INSTANCE.logEventToReport(driver, test, "Error", element, e.getMessage());
+			throw new Exception("Unable to wait for element visible. "+e.getMessage());
+		}
+		return elementPresent;
+	}
+	
+	public boolean waitForAllElements(List<WebElement> element) throws Exception {
+		boolean elementPresent = false;
+		try{
+			waitForDocumentReady();
+			if(wait.until(ExpectedConditions.visibilityOfAllElements(element)) != null){
+				elementPresent = true;
+			}
+			return waitForDocumentReady() && elementPresent;
+		} catch (Exception e){
+			throw new Exception("Unable to wait for element visible.", e);
+		}
+	}
+
+	protected WebElement waitAndReturnElementPresent(String xpathExpression) throws Exception{
+		try {
+			wait.until(new Function<WebDriver, Boolean>() {
+				public Boolean apply(WebDriver driver) {
+					return driver.findElement(By.xpath(xpathExpression)) != null;
+				}
+			});
+			return driver.findElement(By.xpath(xpathExpression));
+		} catch (Exception e) {
+			
+			throw new Exception("Unable to get the element.", e);
+		}
+	}
+
+	protected boolean waitForElementToBePresent(String element) throws Exception {
+		try{
+			wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(element)));
+			return true;
+		} catch (Exception e){
+			Helper.INSTANCE.logEventToReport(driver, test, "error", element, e.getMessage());
+			throw new Exception("Unable to wait for element to be present.", e);
+		}
+	}
+
+	protected boolean waitForElementInvisible(List<WebElement> element) throws Exception {
+		try {
+			return wait.until(ExpectedConditions.invisibilityOfAllElements(element));
+		} catch (Exception e) {
+			throw new Exception("Unable to wait for invisibility of element.", e);
+		}
+	}
+	
+	/* Project Specific Actions */
+	
+	protected boolean compareTwoList(List<String> subList, List<String> mainList)	{
+		boolean flag = false;
+		try	{
+			for(String subIndex : subList) 	{
+				for(String mainIndex : mainList) {
+					if(mainIndex.split(" - ")[1].equalsIgnoreCase(subIndex)) {
+						Helper.INSTANCE.logEventInfoToReport(driver, test, subIndex, "Found");
+						flag = true;
+						break;
+					}
+				}
+				if(!flag)	{
+					Helper.INSTANCE.logEventInfoToReport(driver, test, subIndex, "Not Found");
+				}
+			}
+		}
+		catch(Exception e)	{
+			e.printStackTrace();
+		}
+			return flag;
+	}
+	
+	protected boolean findInList(List<String> list, String text) throws Exception	{
+		boolean flag = false;
+		for(String li: list) {
+			if(li.split("/")[0].equalsIgnoreCase(text)) {
+				flag = true;	
+			}
+			else {
+				Helper.INSTANCE.logEventInfoToReport(driver, test, li, "Displayed");
+				flag = false;
+			}
+		}
+		if(flag) {
+				Helper.INSTANCE.logEventInfoToReport(driver, test, "Text Verification", "Pass");
+		}
+		return flag;
+	}
+	
+	
+	protected void checkInPages(int pagecount, String valueToCheck, WebElement nextbutton, String nameList) throws Exception {
+		for(int i=1;i<=pagecount;i++)	{
+			List<WebElement> journalNameList = driver.findElements(By.xpath(nameList));
+			List<String> Titles = supportObject.getListOfValues(journalNameList);
+			findInList(Titles, valueToCheck);
+			clickOnElement(nextbutton);
+			Thread.sleep(1000);
+		}
+	}
+	
+	protected boolean compareListAndSelect(String title, List<String> journallist, WebElement journaltype) throws Exception  
+	{
+		boolean flag = false; 
+		title = Helper.INSTANCE.splitTitle(title);
+		for(String list : journallist)
+		{
+			if(list.equalsIgnoreCase(title))
+			{
+				selectByVisibleText(journaltype, list);
+				flag = true;
+			}
+		}
+		return flag;
+	}
+	
+	protected boolean selectVolumeIssue(WebElement firstindex, int index) throws Exception	{
+		try	{
+			selectByIndex(firstindex, index);
+			Helper.INSTANCE.logEventInfoToReport(driver, test,"Index "+index+" is selected", "Pass");
+			return true;
+		}
+		catch(Exception e) {
+			throw new Exception("Unable to select volume issue "+e.getMessage());
+		}
+	}
+	
+	protected void verifyNonEmpty(WebElement element, String name) throws Exception
+	{
+		try	{
+			if(element.getAttribute("value").isEmpty()) {
+				Helper.INSTANCE.logEventInfoToReport(driver, test,StringUtils.capitalize(name)+" - Field is non-empty", "Fail");
+			}
+			else {
+				Helper.INSTANCE.logEventInfoToReport(driver, test,StringUtils.capitalize(name)+" - Field is non-empty", "Pass");
+			}
+		}
+		catch(Exception e)	{
+			throw new Exception("Unable to get attribute "+name);
+		}
+	}	
+	
+	/* DB Methods*/
+	
+	protected ResultSet executeQueryAndReturnData(Connection connection, String query)	{
+		ResultSet rs = null;
+		try	{
+			Statement stmt = connection.createStatement();
+			rs = stmt.executeQuery(query);
+			Helper.INSTANCE.logEventInfoToReport(driver, test, query, "Executed");
+		}
+		catch(Exception e)	{
+			e.printStackTrace();
+		}
+		return rs;
+	}
+	
+	protected String getValueUsingColumnName(ResultSet result, String column) throws Exception {
+	String resultValue = "";
+	try	{
+			while(result.next()) {
+				resultValue = result.getString(column);
+			}
+			if(resultValue.toCharArray().length==0) {
+				Helper.INSTANCE.logEventToReport(driver, test, "fail", column, "Not Found");
+			}
+			else {
+				Helper.INSTANCE.logEventToReport(driver, test, "pass", column+"="+resultValue, "Found");
+			}
+		}
+		catch(Exception e)	{
+			throw new Exception("Unable to get columnName "+e);
+		}
+			return resultValue;
+	}
+	
+	
+	protected List<String> getColumnList(ResultSet result, String columns, List<String> datas) {
+		String column[] = columns.split(",");
+			try	{
+				while(result.next()) {
+					datas.add(result.getString(column[0])+"_"+result.getString(column[1]));
+				}
+			}
+			catch(Exception e)	{
+				e.printStackTrace();
+			}
+			return datas;
+		}
+	
+		
+
+	/*Mailer Components*/
+
+	public void verifyMail(String username, String password, String host, String subject, int m_Time) throws Exception {
+		int interval = 0;
+		boolean flag = false;
+		try	{
+			do {
+			   flag = Helper.INSTANCE.readMailSubject(host, username, password, subject);
+			   waitFor("60");
+			   interval++;
+			}
+			while((interval<m_Time)&&(flag ==false));
+			if(flag) {
+				Helper.INSTANCE.logEventToReport(driver, test, "pass", subject, " Found");
+			}
+			else {
+				Helper.INSTANCE.logEventToReport(driver, test, "fail", subject, " Not Found");
+			}
+		}
+		catch(Exception e) {
+			System.out.println(e.getMessage());	
+		}
+	}
+
+	protected WebElement buildXpath(String text) throws Exception
+	{
+		WebElement xpath = driver.findElement(By.xpath("//*[text()='"+text+"']"));
+		return xpath;
+	}
+	
+	protected boolean alertHandling(WebElement element, String text) throws Exception	{
+		clickOnElement(element);
+		Alert alert = driver.switchTo().alert();
+		try {
+			if(text.equalsIgnoreCase("accept"))	{
+				alert.accept();
+			}
+			else if(text.equalsIgnoreCase("dismiss")) {
+				alert.dismiss();
+			}
+			return true;
+		}
+		catch(Exception e){
+			Helper.INSTANCE.logEventToReport(driver, test, "error", "Alert", e.getMessage());
+			throw new Exception(e.getMessage());
+		}
+		
+	}
+	
+	public boolean getvariablename(String classname, String variable) throws Exception{
+		boolean flag = true;
+		try{
+				Field[] field = BasePage.class.getDeclaredFields();
+				for(Field f : field){
+					System.out.println(f.getName());
+		}
+		catch(Exception e){
+			
+		}
+		return flag;
+		}
+	}
+}
+}
+	
+

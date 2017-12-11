@@ -1,0 +1,7 @@
+#----------------------------------------------------------------------------------------------------------------------------------------
+TESTDATA_LOCATION				=//tnqfs07/SOFTWARE/TESTING_SERVICES/Projects/NIMBLE/TESTDATA
+CONFIG_LOCATION					=//tnqfs07/SOFTWARE/TESTING_SERVICES/Projects/Dependencies/config/Sheridan/configuration.properties
+#----------------------------------------------------------------------------------------------------------------------------------------
+#TESTINGBOTCREDENTIALS
+KEY								=7776e7b8521e4d35e37ca3b6dc65ce93
+SECRET							=e1a9908af595052935c8f628203caa3c
